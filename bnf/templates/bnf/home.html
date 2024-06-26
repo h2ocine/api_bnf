@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chatbot</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .chat-container { max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ccc; }
+        .message { margin: 10px 0; }
+        .bot { color: blue; }
+        .user { color: green; }
+        .input-container { display: flex; }
+        .input-container input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .input-container button {
+            padding: 10px;
+            border: none;
+            background-color: black;
+            color: white;
+            cursor: pointer;
+        }
+        .input-container button:hover {
+            background-color: grey;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <h1>Bnf chatbot</h1>
+        <div id="chatbox"></div>
+        <div class="input-container">
+            <input type="text" id="userInput" placeholder="Entrez votre message" />
+            <button onclick="sendMessage()">➤</button>
+        </div>
+    </div>
+    <script>
+        function sendMessage() {
+        const userInput = document.getElementById('userInput').value;
+        const chatbox = document.getElementById('chatbox');
+        const userMessage = `<div class="message user">${userInput}</div>`;
+        chatbox.innerHTML += userMessage;
+        document.getElementById('userInput').value = ''; 
+
+        fetch('/chat/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: `message=${encodeURIComponent(userInput)}`
+        })
+        .then(response => {
+            // Vérifie si la réponse est correcte (statut 200 OK)
+            if (!response.ok) {
+                throw new Error('Network response was not ok ' + response.statusText);
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Vérifie si les données contiennent le message attendu
+            if (data.message) {
+                const botMessage = `<div class="message bot">${data.message}</div>`;
+                chatbox.innerHTML += botMessage;
+            } else {
+                console.error('Response JSON does not contain a message property');
+            }
+        })
+        .catch(error => {
+            // Gère les erreurs éventuelles
+            console.error('There was a problem with the fetch operation:', error);
+            const errorMessage = `<div class="message bot error">There was an error: ${error.message}</div>`;
+            chatbox.innerHTML += errorMessage;
+        });
+        }
+    </script>
+</body>
+</html>
