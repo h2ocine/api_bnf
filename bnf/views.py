@@ -71,7 +71,7 @@ def chat(request):
 
         # Extraire le texte généré
         bot_message = output[0]['generated_text']
-        full_bot_message = f"bot : {bot_message.strip()}"  # Ajouter "helloworld" à la réponse du bot
+        full_bot_message = f"bot : {bot_message.strip()}"  
 
         print(full_bot_message)
         return JsonResponse({'message': full_bot_message})
