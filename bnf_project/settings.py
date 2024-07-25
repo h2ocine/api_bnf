@@ -25,7 +25,15 @@ SECRET_KEY = 'django-insecure-sj8fwof9gm!m9^)yc^#k_w^-*%=@0p79!p#$!f4f-7r*!zn%_&
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'localhost',
+    '127.0.0.1',
+    '192.168.43.53',  # Votre IP locale
+    '2a02:8440:3340:89b2:de7a:11e8:e58f:21a7',  # Votre IP publique
+    'bnfsearch.lovestoblog.com'
+]
+
+
 
 
 # Application definition
